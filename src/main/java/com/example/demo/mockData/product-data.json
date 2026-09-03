@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "productCode": "PRD-001",
+    "productName": "Savings Account",
+    "category": "Deposit",
+    "status": "ACTIVE",
+    "createdAt": "2026-08-01T09:00:00"
+  },
+  {
+    "id": 2,
+    "productCode": "PRD-002",
+    "productName": "Fixed Deposit",
+    "category": "Deposit",
+    "status": "ACTIVE",
+    "createdAt": "2026-08-15T14:30:00"
+  },
+  {
+    "id": 3,
+    "productCode": "PRD-003",
+    "productName": "Current Account",
+    "category": "Transaction",
+    "status": "INACTIVE",
+    "createdAt": "2026-07-20T11:15:00"
+  }
+]
