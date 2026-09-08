@@ -2,6 +2,8 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +33,16 @@ public class BaseEntity {
 
     public void markModified(String user) {
         this.modifiedBy = user;
+        this.modifiedOn = LocalDateTime.now();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdOn = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
         this.modifiedOn = LocalDateTime.now();
     }
 }
