@@ -30,11 +30,11 @@ public class Response<T> {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public static Response<Void> success(String message, String description) {
+    public static <T> Response<T> success(String message, String description) {
         return new Response<>("200", message, description);
     }
 
-    public static Response<Void> success(String code, String message, String description) {
+    public static <T> Response<T> success(String code, String message, String description) {
         return new Response<>(code, message, description);
     }
 
@@ -47,7 +47,7 @@ public class Response<T> {
         return new Response<>(code, message, description, data);
     }
 
-    public static Response<Void> error(
+    public static <T> Response<T> error(
             String code,
             String message,
             String description) {
@@ -64,7 +64,7 @@ public class Response<T> {
         return new Response<>(code, message, description, data);
     }
 
-    public static Response<Void> badRequest(
+    public static <T> Response<T> badRequest(
             String message,
             String description) {
 

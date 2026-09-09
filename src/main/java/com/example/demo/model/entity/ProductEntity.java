@@ -13,8 +13,12 @@ public class ProductEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(unique = true)
     private String productCode;
     private String productName;
     private String category;
+    private Float price;
+    private Integer quantity;
     private String status;
 }
