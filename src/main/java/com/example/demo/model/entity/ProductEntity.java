@@ -21,4 +21,7 @@ public class ProductEntity extends BaseEntity{
     private Float price;
     private Integer quantity;
     private String status;
+
+    @Column(name = "is_delete", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isDeleted;
 }

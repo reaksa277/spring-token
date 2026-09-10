@@ -34,4 +34,24 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Response.success("201","success","successfully save product"));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Response<ProductResponseDto>> updateProduct(
+            @RequestParam String productCode,
+            @Valid @RequestBody ProductRequestDto requestDto) {
+
+        ProductResponseDto res =
+                productService.updateProduct(productCode, requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.success("200","success", "successfully update product", res));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Response<ProductResponseDto>> deleteProductByProductCode(@RequestParam String code) {
+        productService.deleteProductByProductCode(code);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.success("200", "success", "successfully delete product"));
+    }
 }

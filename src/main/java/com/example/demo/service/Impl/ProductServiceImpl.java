@@ -22,10 +22,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
 
-    private static final String MOCK_DATA_PATH = "mock-data/product-data.json";
-
-    private final ObjectMapper mapper;
-
     @Override
     public List<ProductResponseDto> listProduct() {
         List<ProductEntity> productEntities = productRepository.findAll();
@@ -54,5 +50,30 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity save = productRepository.save(productEntity);
 
         productMapper.toDto(save);
+    }
+
+    @Override
+    public ProductResponseDto updateProduct(String productCode, ProductRequestDto requestDto) {
+        ProductEntity existing = productRepository
+                .findByProductCode(productCode)
+                .orElseThrow(() ->
+                        new RuntimeException("Product not found"));
+
+        productMapper.updateEntityFromDto(requestDto, existing);
+
+        ProductEntity saved = productRepository.save(existing);
+
+        return productMapper.toDto(saved);
+    }
+
+    @Override
+    public void deleteProductByProductCode(String code) {
+        ProductEntity existingProductEntity = productRepository
+                .findByProductCode(code)
+                .orElseThrow(() ->
+                        new RuntimeException("Product not found"));
+        existingProductEntity.setIsDeleted(true);
+
+        productRepository.save(existingProductEntity);
     }
 }

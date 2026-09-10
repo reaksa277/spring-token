@@ -25,4 +25,5 @@ public class ProductResponseDto {
     private String createdBy;
     private LocalDateTime modifiedOn;
     private String modifiedBy;
+    private Boolean isDeleted;
 }

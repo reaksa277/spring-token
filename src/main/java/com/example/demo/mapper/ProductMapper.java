@@ -33,6 +33,10 @@ public class ProductMapper {
         dto.setQuantity(entity.getQuantity());
         dto.setStatus(entity.getStatus());
         dto.setCreatedOn(entity.getCreatedOn());
+        dto.setCreatedBy(entity.getCreatedBy());
+        dto.setModifiedOn(entity.getModifiedOn());
+        dto.setModifiedBy(entity.getModifiedBy());
+        dto.setIsDeleted(entity.getIsDeleted());
 
         return dto;
     }

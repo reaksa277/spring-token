@@ -9,4 +9,8 @@ public interface ProductService {
     List<ProductResponseDto> listProduct();
 
     void saveProduct(ProductRequestDto productRequestDto);
+
+    ProductResponseDto updateProduct(String productCode, ProductRequestDto requestDto);
+
+    void deleteProductByProductCode(String code);
 }
