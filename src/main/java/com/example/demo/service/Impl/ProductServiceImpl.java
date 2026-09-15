@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
 
         Pageable pageable = PageRequest.of(requestPageDto.getPage() - 1, requestPageDto.getSize());
 
-        Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
+        Page<ProductEntity> productEntityPage = productRepository.findByIsDeletedFalse(pageable);
 
         log.info("List Product page {} of {}, totalElements={}",
                 productEntityPage.getNumber(), productEntityPage.getTotalPages(), productEntityPage.getTotalElements());
