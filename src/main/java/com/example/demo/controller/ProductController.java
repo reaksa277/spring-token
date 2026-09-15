@@ -1,11 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.request.ProductRequestDto;
+import com.example.demo.dto.request.RequestPageDto;
+import com.example.demo.dto.response.PaginateResponse;
 import com.example.demo.dto.response.ProductResponseDto;
 import com.example.demo.dto.Response;
+import com.example.demo.exception.BusinessException;
 import com.example.demo.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +24,10 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/list-page")
-    public ResponseEntity<Response<List<ProductResponseDto>>> listProduct() {
-        List<ProductResponseDto> products = productService.listProduct();
+    public ResponseEntity<Response<PaginateResponse<ProductResponseDto>>> listProduct(
+           @Valid @RequestBody RequestPageDto requestDto) throws BusinessException {
+
+        PaginateResponse<ProductResponseDto> products = productService.listProduct(requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.success("200", "success", "successfully retrieved product", products));

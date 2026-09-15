@@ -55,6 +55,10 @@ public class Response<T> {
         return new Response<>(code, message, description);
     }
 
+    public static <T> Response<T> error(String code, String message) {
+        return new Response<>(code, "error", message, null);
+    }
+
     public static <T> Response<T> error(
             String code,
             String message,
