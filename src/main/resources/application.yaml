@@ -10,3 +10,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
+config:
+  security:
+    secret:
+    expiration: 3600000 #ms 1h

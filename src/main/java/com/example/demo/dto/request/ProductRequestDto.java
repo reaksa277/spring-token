@@ -1,6 +1,6 @@
 package com.example.demo.dto.request;
 
-import com.example.demo.common.Status;
+import com.example.demo.common.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
