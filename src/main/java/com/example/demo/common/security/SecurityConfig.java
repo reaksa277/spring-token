@@ -52,7 +52,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // stateless API, no cookies forge
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
