@@ -13,4 +13,5 @@ spring:
 config:
   security:
     secret: GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==
-    expiration: 3600000 #ms 1h
+    access-token-expiration: 900000 # 15 minutes
+    refresh-token-expiration: 604800000 # 7 days

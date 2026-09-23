@@ -17,5 +17,6 @@ public class ApplicationConfiguration {
     public static class Security {
         private String secret;
         private long expiration;
+        private long refreshTokenExpiration;
     }
 }
