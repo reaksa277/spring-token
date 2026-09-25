@@ -1,19 +1,24 @@
 package com.example.demo.service.Impl;
 
 import com.example.demo.common.config.ApplicationConfiguration;
+import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.model.entity.RefreshToken;
 import com.example.demo.model.entity.UserEntity;
 import com.example.demo.respository.RefreshTokenRepository;
 import com.example.demo.service.security.RefreshTokenService;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
 @Service
+@Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Autowired
@@ -33,12 +38,46 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken createRefreshToken(UserEntity user) {
         String refreshToken = this.generateSourceRefreshToken();
 
+        log.info("refreshToken expiration value = {}", this.expiration);
+
         RefreshToken entity = new RefreshToken();
         entity.setToken(refreshToken);
         entity.setExpiresAt(LocalDateTime.now().plusHours(expiration));
         entity.setUser(user);
 
         return refreshTokenRepository.save(entity);
+    }
+
+    @Override
+    public RefreshToken findByToken(String token) {
+        return refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new ResourceNotFoundException("Refresh token is invalid"));
+    }
+
+    @Override
+    public RefreshToken verifyToken(RefreshToken token) throws AuthenticationException {
+        // expiration && revoke
+        if (!token.isValid()) {
+            refreshTokenRepository.delete(token);
+            throw new AuthenticationException("Refresh token was expired or revoked");
+        }
+
+        return token;
+    }
+
+    @Override
+    public RefreshToken rotateRefreshToken(RefreshToken oldToken) {
+        // revoke old refresh token
+        oldToken.setRevoked(true);
+
+        // generate new refresh token
+        return this.createRefreshToken(oldToken.getUser());
+    }
+
+    @Override
+    @Transactional
+    public void deleteExpiredAndRevokedToken() {
+        refreshTokenRepository.deleteExpiredAndRevokedToken(LocalDateTime.now());
     }
 
     private String generateSourceRefreshToken() {

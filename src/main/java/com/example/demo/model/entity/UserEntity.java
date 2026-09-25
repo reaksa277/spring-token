@@ -11,7 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -31,8 +33,19 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    @Column(name = "role")
+    private Set<Role> role = new HashSet<>();
+
+    public Set<Role> getRoles() {
+        return role;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.role = roles;
+    }
 
     // --- UserDetails contract ---
 

@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -50,16 +52,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userService.loadUserByUsername(username);
 
                 if (jwtUtil.isTokenValid(jwt, userDetails)) {
+                    log.info("Authorities for {}: {}", username, userDetails.getAuthorities());
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (ExpiredJwtException | MalformedJwtException | SignatureException e) {
-            // Let the request continue unauthenticated — Spring Security's
-            // entry point will reject it with 401 further down the chain.
-            // Swallowing here (rather than throwing) keeps the filter chain intact.
+        } catch (Exception e) {
+            log.warn("JWT authentication failed: {}", e.getMessage());
+            // let it fall through unauthenticated; entry point handles the 401
         }
 
         filterChain.doFilter(request, response);

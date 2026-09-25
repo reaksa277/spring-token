@@ -27,6 +27,14 @@ public class RefreshToken {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "created_on", updatable = false, nullable = false)
+    private LocalDateTime createdOn;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdOn = LocalDateTime.now();
+    }
+
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(this.expiresAt);
     }
