@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo_stage
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+config:
+  security:
+    secret: GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==
+    expiration: 900000 # 15 minutes
+    refresh-token-expiration: 1 # h
