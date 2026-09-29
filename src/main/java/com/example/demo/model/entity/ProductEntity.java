@@ -2,8 +2,10 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "products")
 @Getter
 @Setter

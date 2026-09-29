@@ -3,6 +3,8 @@ package com.example.demo.dto.protection;
 import java.time.LocalDateTime;
 
 public interface ProductProjection {
+    int getId();
+
     String getProductCode();
 
     String getProductName();

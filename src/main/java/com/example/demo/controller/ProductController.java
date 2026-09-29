@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.protection.ProductProjection;
 import com.example.demo.dto.request.ProductRequestDto;
 import com.example.demo.dto.request.RequestPageDto;
 import com.example.demo.dto.response.PaginateResponse;
@@ -24,7 +25,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/list-page")
     public ResponseEntity<Response<PaginateResponse<ProductResponseDto>>> listProduct(
            @Valid @RequestBody RequestPageDto requestDto) throws BusinessException {
@@ -35,8 +36,14 @@ public class ProductController {
                 .body(Response.success("200", "success", "successfully retrieved product", products));
     }
 
-//    @GetMapping("view-details")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("view-details")
+    public ResponseEntity<Response<ProductProjection>> getProductDetailsById(@RequestParam int id) throws BusinessException {
+        ProductProjection product = productService.retrieveProductById(id);
 
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.success("200", "success", "successfully retrieved product", product));
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -47,6 +54,7 @@ public class ProductController {
                 .body(Response.success("201","success","successfully save product"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<Response<ProductResponseDto>> updateProduct(
             @RequestParam String productCode,
@@ -59,6 +67,7 @@ public class ProductController {
                 .body(Response.success("200","success", "successfully update product", res));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<Response<ProductResponseDto>> deleteProductByProductCode(@RequestParam String code) {
         productService.deleteProductByProductCode(code);

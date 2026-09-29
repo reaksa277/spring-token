@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.protection.ProductProjection;
 import com.example.demo.dto.request.ProductRequestDto;
 import com.example.demo.dto.request.RequestPageDto;
 import com.example.demo.dto.response.PaginateResponse;
@@ -11,6 +12,8 @@ import java.util.List;
 
 public interface ProductService {
     PaginateResponse<ProductResponseDto> listProduct(RequestPageDto requestDto) throws BusinessException;
+
+    ProductProjection retrieveProductById(int id) throws BusinessException;
 
     void saveProduct(ProductRequestDto productRequestDto);
 

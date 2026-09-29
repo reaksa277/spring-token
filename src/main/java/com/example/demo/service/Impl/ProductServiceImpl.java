@@ -3,11 +3,13 @@ package com.example.demo.service.Impl;
 //import static com.example.demo.common.util.PageRequestValidationUtils.validatePaginationRequest;
 import com.example.demo.common.util.PageRequestValidationUtils;
 
+import com.example.demo.dto.protection.ProductProjection;
 import com.example.demo.dto.request.ProductRequestDto;
 import com.example.demo.dto.request.RequestPageDto;
 import com.example.demo.dto.response.PaginateResponse;
 import com.example.demo.dto.response.ProductResponseDto;
 import com.example.demo.exception.BusinessException;
+import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.entity.ProductEntity;
 import com.example.demo.respository.ProductRepository;
@@ -45,6 +47,17 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductResponseDto> productDtoPage = productEntityPage.map(productMapper::toDto);
 
         return new PaginateResponse<>(productDtoPage);
+    }
+
+    @Override
+    public ProductProjection retrieveProductById(int id) throws BusinessException {
+        ProductProjection productProjection = productRepository
+                .findProductById(id)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Product not found id: " + id)
+                );
+
+        return productProjection;
     }
 
     @Override
