@@ -6,6 +6,9 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +17,14 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class BaseEntity {
 
+    @CreatedBy
     @Column(name = "created_by", updatable = false, nullable = false)
     private String createdBy;
 
     @Column(name = "created_on", updatable = false, nullable = false)
     private LocalDateTime createdOn;
 
+    @LastModifiedBy
     @Column(name = "modified_by", insertable = false)
     private String modifiedBy;
 
