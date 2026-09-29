@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/list-page")
     public ResponseEntity<Response<PaginateResponse<ProductResponseDto>>> listProduct(
            @Valid @RequestBody RequestPageDto requestDto) throws BusinessException {
@@ -33,6 +35,10 @@ public class ProductController {
                 .body(Response.success("200", "success", "successfully retrieved product", products));
     }
 
+//    @GetMapping("view-details")
+
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Response<ProductResponseDto>> saveProduct(@Valid @RequestBody ProductRequestDto payload) {
         productService.saveProduct(payload);

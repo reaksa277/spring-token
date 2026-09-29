@@ -19,6 +19,7 @@ public class ProductMapper {
         entity.setQuantity(dto.getQuantity());
         entity.setCategory(dto.getCategory());
         entity.setStatus(dto.getStatus());
+        entity.setIsDeleted(Boolean.FALSE);
 
         return entity;
     }
