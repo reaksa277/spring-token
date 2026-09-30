@@ -14,25 +14,11 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class JpaAuditConfig {
 
-//    @Bean
-//    public AuditorAware<String> auditorAware() {
-//        return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-//                .filter(Authentication::isAuthenticated)
-//                .filter(a -> !(a instanceof AnonymousAuthenticationToken))
-//                .map(Authentication::getName);
-//    }
-
     @Bean
     public AuditorAware<String> auditorAware() {
-        return () -> {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            System.out.println("AUDITOR auth = " + auth);   // temporary debug
-
-            if (auth == null || !auth.isAuthenticated()
-                    || auth instanceof AnonymousAuthenticationToken) {
-                return Optional.empty();
-            }
-            return Optional.of(auth.getName());
-        };
+        return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(Authentication::isAuthenticated)
+                .filter(a -> !(a instanceof AnonymousAuthenticationToken))
+                .map(Authentication::getName);
     }
 }
