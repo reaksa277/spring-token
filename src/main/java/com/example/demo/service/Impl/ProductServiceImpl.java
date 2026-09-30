@@ -16,6 +16,11 @@ import com.example.demo.respository.ProductRepository;
 import com.example.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +30,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductMapper productMapper;
-    private final ProductRepository productRepository;
+    @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
+    @CachePut(value = "products", key = "#requestDto.productName")
     public PaginateResponse<ProductResponseDto> listProduct(RequestPageDto requestPageDto) throws BusinessException {
 
         PageRequestValidationUtils.validatePaginationRequest(requestPageDto);
@@ -61,6 +69,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Caching(
+            put = @CachePut(value = "products", key = "#requestDto.productName"),
+            evict = @CacheEvict(value = "products-paginated", allEntries = true)
+    )
     public void saveProduct(ProductRequestDto requestDto) {
 
         log.debug("Save request: {}", requestDto);

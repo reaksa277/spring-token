@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PaginateResponse<T> implements Serializable {
+public class PaginateResponse<T> {
 
     private List<T> content;
     private int page;
