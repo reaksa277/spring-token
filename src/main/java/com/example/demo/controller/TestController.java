@@ -22,9 +22,17 @@ public class TestController {
         return "Hello Spring Boot 123";
     }
 
-    @GetMapping("/mock-webclient")
-    public ResponseEntity<Response<Object>> testWebClient() {
+    @GetMapping("/webclient-SynApi")
+    public ResponseEntity<Response<Object>> testSynApi() {
         Object res = testService.testSynApi();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.success("200", "success", "success", res));
+    }
+
+    @GetMapping("/webclient-AsyncApi")
+    public ResponseEntity<Response<Object>> testAsyncApi() {
+        Object res = testService.testAsyncApi();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.success("200", "success", "success", res));
