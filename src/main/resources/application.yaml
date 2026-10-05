@@ -24,3 +24,8 @@ config:
     secret: GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==
     expiration: 900000 # 15 mins
     refresh-token-expiration: 1 # h
+  json-placeholder:
+    base-url: https://jsonplaceholder.typicode.com
+    uri:
+      posts: /posts
+      comments: /comments
