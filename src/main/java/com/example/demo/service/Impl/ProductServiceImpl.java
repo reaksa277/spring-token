@@ -14,6 +14,7 @@ import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.entity.ProductEntity;
 import com.example.demo.respository.ProductRepository;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.mail.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     @CachePut(value = "products", key = "#requestDto.productName")
@@ -69,16 +73,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Caching(
-            put = @CachePut(value = "products", key = "#requestDto.productName"),
-            evict = @CacheEvict(value = "products-paginated", allEntries = true)
-    )
+//    @Caching(
+//            put = @CachePut(value = "products", key = "#requestDto.productName"),
+//            evict = @CacheEvict(value = "products-paginated", allEntries = true)
+//    )
     public void saveProduct(ProductRequestDto requestDto) {
+        String threadName = Thread.currentThread().getName();
 
         log.debug("Save request: {}", requestDto);
         if(productRepository.existsByProductName(requestDto.getProductName())) {
-            throw new RuntimeException("product is already existed");
+            throw new RuntimeException("product name is already existed");
         }
+        log.info("[SYNC-PRODUCT] Creating new product | Thread: {}", threadName);
 
         ProductEntity productEntity = productMapper.toEntity(requestDto);
 
@@ -91,8 +97,14 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setProductCode(productCode);
 
         ProductEntity save = productRepository.save(productEntity);
+        log.info("[SYNC-PRODUCT] Product created successfully with Product: {} | Thread: {}", productEntity.getId() , threadName);
+        log.info("[SYNC-PRODUCT] Trigger send notification asynchronously for Product: {} | Thread: {}", productEntity.getId() , threadName);
 
-        productMapper.toDto(save);
+        notificationService.sendProductConfirmNotification(productEntity.getId(), "Your product has been completed");
+
+//        productMapper.toDto(save);
+
+        log.info("[SYNC-ORDER-COMPLETED] Completed order and triggered send notification");
     }
 
     @Override
