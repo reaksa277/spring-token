@@ -1,8 +1,11 @@
+server:
+  port: 8090
+
 spring:
   application:
     name: demo
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo_db
+    url: jdbc:postgresql://localhost:5432/demo-api
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -21,7 +24,7 @@ spring:
     type: redis
 config:
   security:
-    secret: GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==
+    secret: ${JWT_SECRET}
     expiration: 900000 # 15 mins
     refresh-token-expiration: 1 # h
   json-placeholder:
@@ -29,3 +32,7 @@ config:
     uri:
       posts: /posts
       comments: /comments
+  telegram:
+    base-url: https://api.telegram.org/bot{TOKEN}/sendMessage
+    token: 8203338306:AAHjBlmpzNg53d4k4rAOXAPbrD0fPg_-MpA
+    chat-id: 895853342

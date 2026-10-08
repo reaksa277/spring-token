@@ -1,21 +1,38 @@
 server:
-  port: 9000
+  port: ${PORT:8080}
 
 spring:
   application:
     name: demo
   datasource:
-    url: jdbc:postgresql://localhost:5432/demo_prod
-    username: admin
-    password: admin
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/demo_prod}
+    username: ${DATABASE_USERNAME:admin}
+    password: ${DATABASE_PASSWORD:admin}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:MyVerySecurePassword}
+    # configuration cache type
+    cache:
+      type: redis
 config:
   security:
-    secret: GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==
+    secret: ${JWT_SECRET:GLZ+v9y3r/3XUUuWzxc+akGaQ8gfUiTgaY4Gu25LWJgjasjUVqZeVIXNopY4hD6riJTq6X3VGiUXvz6KpAQ4bg==}
     # expiration: 900000 # 15 minutes
-    expiration: 60000 # 1 min
-    refresh-token-expiration: 1 # h
+    expiration: ${JWT_EXPIRATION:360000} # min
+    refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION:360000} # h
+  json-placeholder:
+    base-url: https://jsonplaceholder.typicode.com
+    uri:
+      posts: /posts
+      comments: /comments
+  telegram:
+    base-url: https://api.telegram.org/bot{TOKEN}/sendMessage
+    token:
+    chat-id:

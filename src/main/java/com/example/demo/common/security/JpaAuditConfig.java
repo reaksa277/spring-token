@@ -19,6 +19,7 @@ public class JpaAuditConfig {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(Authentication::isAuthenticated)
                 .filter(a -> !(a instanceof AnonymousAuthenticationToken))
-                .map(Authentication::getName);
+                .map(Authentication::getName)
+                .or(() -> Optional.of("system"));
     }
 }

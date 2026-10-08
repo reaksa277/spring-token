@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class ApplicationConfiguration {
     private Security security;
     private JsonPlaceholder jsonPlaceholder;
+    private Telegram telegram;
 
     @Getter
     @Setter
@@ -35,6 +36,18 @@ public class ApplicationConfiguration {
 
         public String getCommentsUri() {
             return uri.get("comments");
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class Telegram {
+        private String baseUrl;
+        private String token;
+        private String chatId;
+
+        public String getBaseUrl() {
+            return this.baseUrl.replace("{TOKEN}", this.token);
         }
     }
 }
