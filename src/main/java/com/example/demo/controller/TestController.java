@@ -2,13 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.Response;
 import com.example.demo.service.TestService;
+import com.example.demo.service.kafka.ProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/test")
@@ -16,6 +14,16 @@ public class TestController {
 
     @Autowired
     private TestService testService;
+
+    @Autowired
+    private ProducerService kafkaProducer;
+
+//    @PostMapping("/kafka-send-message")
+//    public String sendEvent(@RequestBody String message) {
+//        kafkaProducer.sendMessage(message);
+//
+//        return "success";
+//    }
 
     @GetMapping("/hello")
     public String hello() {

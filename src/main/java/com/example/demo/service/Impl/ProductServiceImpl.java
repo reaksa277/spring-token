@@ -8,12 +8,14 @@ import com.example.demo.dto.request.ProductRequestDto;
 import com.example.demo.dto.request.RequestPageDto;
 import com.example.demo.dto.response.PaginateResponse;
 import com.example.demo.dto.response.ProductResponseDto;
+import com.example.demo.event.ProductEvent;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.entity.ProductEntity;
 import com.example.demo.respository.ProductRepository;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.kafka.ProducerService;
 import com.example.demo.service.mail.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private ProducerService<ProductEvent> producerService;
 
     @Override
     @CachePut(value = "products", key = "#requestDto.productName")
@@ -96,7 +101,10 @@ public class ProductServiceImpl implements ProductService {
 
         productEntity.setProductCode(productCode);
 
-        ProductEntity save = productRepository.save(productEntity);
+        productRepository.save(productEntity);
+
+        producerService.sendMessage("product.event", new ProductEvent(productEntity.getId()));
+
         log.info("[SYNC-PRODUCT] Product created successfully with Product: {} | Thread: {}", productEntity.getId() , threadName);
         log.info("[SYNC-PRODUCT] Trigger send notification asynchronously for Product: {} | Thread: {}", productEntity.getId() , threadName);
 

@@ -18,6 +18,11 @@ spring:
       host: localhost
       port: 6379
       password: MyVerySecurePassword
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   # configuration cache type
   cache:
@@ -36,3 +41,6 @@ config:
     base-url: https://api.telegram.org/bot{TOKEN}/sendMessage
     token: 8203338306:AAHjBlmpzNg53d4k4rAOXAPbrD0fPg_-MpA
     chat-id: 895853342
+  login:
+    max-attempts: 5
+    lock-duration: 1m
