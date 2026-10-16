@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,12 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(name = "failed_attempts")
+    private int failedAttempts;
+
+    @Column(name = "locked_until")
+    private Instant lockedUntil;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -59,6 +66,11 @@ public class UserEntity extends BaseEntity implements UserDetails {
     }
 
     @Override
+    public boolean isAccountNonLocked() {
+        return lockedUntil == null || Instant.now().isAfter(lockedUntil);
+    }
+
+    @Override
     public String getPassword() { return password; }
 
     @Override
@@ -66,9 +78,6 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() { return true; }
-
-    @Override
-    public boolean isAccountNonLocked() { return true; }
 
     @Override
     public boolean isCredentialsNonExpired() { return true; }

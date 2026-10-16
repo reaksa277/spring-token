@@ -17,7 +17,9 @@ import com.example.demo.service.security.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,28 +77,38 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto login(AuthRequestDto payload) {
-         try {
-             // login user
-             authenticationManager.authenticate(
-                     new UsernamePasswordAuthenticationToken(payload.getUsername(), payload.getPassword())
-             );
-         } catch (BadCredentialsException e) {
-             throw new CustomAuthenticationException("Invalid username or password");
-         }
+         Authentication authentication = authenticate(payload);
+
+         UserEntity user = (UserEntity) authentication.getPrincipal();
 
         UserDetails userDetails = userService.loadUserByUsername(payload.getUsername());
 
         String accessToken = jwtUtil.generateToken(userDetails);
 
         // generate refresh token
-        UserEntity user = (UserEntity) userDetails;
+//        UserEntity user = (UserEntity) userDetails;
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        List<String> roles = user.getRoles().stream()
+        return new AuthResponseDto(accessToken, refreshToken.getToken(), user.getUsername(), toRoles(user));
+    }
+
+    private Authentication authenticate(AuthRequestDto payload) {
+        try {
+            // login user
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(payload.getUsername(), payload.getPassword())
+            );
+        } catch (LockedException e) {
+            throw new CustomAuthenticationException("Account is temporarily locked. Try again later.");
+        } catch (BadCredentialsException e) {
+            throw new CustomAuthenticationException("Invalid username or password");
+        }
+    }
+
+    private List<String> toRoles(UserEntity user) {
+        return user.getRole().stream()
                 .map(role -> "ROLE_" + role.name())
                 .collect(Collectors.toList());
-
-        return new AuthResponseDto(accessToken, refreshToken.getToken(), user.getUsername(), roles);
     }
 
     @Override

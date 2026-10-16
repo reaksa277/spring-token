@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
 import java.util.HashMap;
 
 @Configuration
@@ -15,6 +16,7 @@ public class ApplicationConfiguration {
     private Security security;
     private JsonPlaceholder jsonPlaceholder;
     private Telegram telegram;
+    private Login login;
 
     @Getter
     @Setter
@@ -49,5 +51,12 @@ public class ApplicationConfiguration {
         public String getBaseUrl() {
             return this.baseUrl.replace("{TOKEN}", this.token);
         }
+    }
+
+    @Getter
+    @Setter
+    public static class Login {
+        private int maxAttempts;
+        private Duration lockDuration;
     }
 }
