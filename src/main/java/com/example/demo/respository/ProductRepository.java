@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
@@ -18,6 +21,10 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     Boolean existsByProductName(String productName);
 
     Optional<ProductEntity> findByProductCode(String productCode);
+
+    @Query(value = "SELECT p.product_code FROM products p WHERE p.product_code IN (:codes)",
+            nativeQuery = true)
+    Set<String> findExistingProductCodes(@Param("codes") Collection<String> codes);
 
     @Query(value = """
     SELECT

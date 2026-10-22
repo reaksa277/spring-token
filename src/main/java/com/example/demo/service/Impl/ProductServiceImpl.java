@@ -8,7 +8,7 @@ import com.example.demo.dto.request.ProductRequestDto;
 import com.example.demo.dto.request.RequestPageDto;
 import com.example.demo.dto.response.PaginateResponse;
 import com.example.demo.dto.response.ProductResponseDto;
-import com.example.demo.event.ProductEvent;
+import com.example.demo.event.model.ProductEvent;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.mapper.ProductMapper;
@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(productEntity);
 
-        producerService.sendMessage("product.event", new ProductEvent(productEntity.getId()));
+        producerService.sendMessage("product.event", new ProductEvent(productEntity.getId(), productEntity.getQuantity()));
 
         log.info("[SYNC-PRODUCT] Product created successfully with Product: {} | Thread: {}", productEntity.getId() , threadName);
         log.info("[SYNC-PRODUCT] Trigger send notification asynchronously for Product: {} | Thread: {}", productEntity.getId() , threadName);

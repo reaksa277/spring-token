@@ -1,4 +1,4 @@
-package com.example.demo.event;
+package com.example.demo.event.model;
 
 import lombok.Data;
 
