@@ -2,6 +2,9 @@ package com.example.demo.service.Impl;
 
 import com.example.demo.dto.request.OrderItemRequestDto;
 import com.example.demo.dto.request.OrderRequestDto;
+import com.example.demo.dto.request.OrderUpdateRequestDto;
+import com.example.demo.dto.response.OrderResponseDto;
+import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.exception.model.product.ProductNotFoundException;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.entity.OrderEntity;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,5 +62,37 @@ public class OrderServiceImpl implements OrderService {
         if (!missingCodes.isEmpty()) {
             throw new ProductNotFoundException(missingCodes);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<OrderResponseDto> listOrders() {
+        List<OrderEntity> orders = orderRepository.findAll();
+
+        return mapper.toResponseDtoList(orders);
+    }
+
+    @Override
+    @Transactional
+    public OrderResponseDto updateOrderStatus(Long orderId, OrderUpdateRequestDto payload) {
+        OrderEntity existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> {
+                    throw new ResourceNotFoundException("order not found with id: " + orderId);
+                });
+
+        mapper.updateEntityFromDto(existingOrder, payload);
+        orderRepository.save(existingOrder);
+
+        return mapper.toResponseDto(existingOrder);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new ResourceNotFoundException("order not found with id: " + orderId);
+        }
+
+        orderRepository.deleteById(orderId);
     }
 }
