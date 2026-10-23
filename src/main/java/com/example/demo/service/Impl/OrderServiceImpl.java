@@ -4,6 +4,8 @@ import com.example.demo.dto.request.OrderItemRequestDto;
 import com.example.demo.dto.request.OrderRequestDto;
 import com.example.demo.dto.request.OrderUpdateRequestDto;
 import com.example.demo.dto.response.OrderResponseDto;
+import com.example.demo.event.model.OrderEvent;
+import com.example.demo.event.model.ProductEvent;
 import com.example.demo.exception.model.ResourceNotFoundException;
 import com.example.demo.exception.model.product.ProductNotFoundException;
 import com.example.demo.mapper.OrderMapper;
@@ -11,6 +13,7 @@ import com.example.demo.model.entity.OrderEntity;
 import com.example.demo.respository.OrderRepository;
 import com.example.demo.respository.ProductRepository;
 import com.example.demo.service.OrderService;
+import com.example.demo.service.kafka.ProducerService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProducerService<OrderEvent> producerService;
+
     @Override
     @Transactional
     public void placeOrder(OrderRequestDto payload) {
@@ -46,6 +52,8 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = mapper.toEntity(payload);
 
         orderRepository.save(order);
+
+        producerService.sendMessage("order.event", new OrderEvent(order.getOrderId()));
     }
 
     private void validateProductCodes(OrderRequestDto payload) {

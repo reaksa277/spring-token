@@ -1,5 +1,6 @@
 package com.example.demo.common.config.kafka;
 
+import com.example.demo.event.model.PaymentEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,8 @@ import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Configuration
-//@EnableKafka
+@Configuration
+@EnableKafka
 public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String BOOTSTRAP_SERVER;
@@ -47,5 +48,10 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(this.consumerConfig(targetType));
 
         return factory;
+    }
+
+    @Bean(name = "paymentContainerFactory")
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentEvent> paymentContainerFactory() {
+        return kafkaListenerContainerFactory(PaymentEvent.class);
     }
 }

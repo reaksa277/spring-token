@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("[SYNC-PRODUCT] Product created successfully with Product: {} | Thread: {}", productEntity.getId() , threadName);
         log.info("[SYNC-PRODUCT] Trigger send notification asynchronously for Product: {} | Thread: {}", productEntity.getId() , threadName);
 
-        notificationService.sendProductConfirmNotification(productEntity.getId(), "Your product has been completed");
+//        notificationService.sendProductConfirmNotification(productEntity.getId(), "Your product has been completed");
 
 //        productMapper.toDto(save);
 
